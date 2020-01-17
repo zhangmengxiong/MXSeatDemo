@@ -1,0 +1,2 @@
+include ':app', ':MXSeat'
+rootProject.name = 'MXSeatDemo'
