@@ -2,17 +2,18 @@ package com.mx.mxseat.drawer
 
 import android.graphics.*
 import com.mx.mxseat.MXSeatView
-import com.mx.mxseat.SeatConfig
 import com.mx.mxseat.dp2px
 import com.mx.mxseat.utils.BitmapCalculatorUtil
 import com.mx.mxseat.utils.TextDrawerUtil
+import kotlin.math.roundToInt
 
-class HeaderDrawer(private val seatView: MXSeatView, private val config: SeatConfig) {
+class LineNumberDrawer(private val seatView: MXSeatView) {
     private val backgroundPaint = Paint()
     private val headTextPaint = Paint()
 
     private val marginBetweenImgAndText = seatView.context.dp2px(5)
     private val marginBetweenTextAndImg = seatView.context.dp2px(12)
+    private val headHeight = seatView.context.dp2px(30).roundToInt()
     private val imgMatrix = Matrix()
 
     init {
@@ -24,20 +25,20 @@ class HeaderDrawer(private val seatView: MXSeatView, private val config: SeatCon
         backgroundPaint.color = Color.WHITE
     }
 
-    fun drawHeader(): Bitmap {
+    fun drawLineNumber(): Bitmap {
         val width = seatView.width
-        val height = config.headHeight
+        val height = headHeight
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), backgroundPaint)
         val textWidth = TextDrawerUtil.getTextWidth(headTextPaint, "已选")
-        val seatBitmap = config.seatBitmap!!
-        val selectBitmap = config.seatCheckedBitmap!!
-        val soldBitmap = config.seatSoldBitmap!!
+        val seatBitmap = seatView.seatBitmap
+        val selectBitmap = seatView.seatCheckedBitmap
+        val soldBitmap = seatView.seatSoldBitmap
 
-        val bitmapSize = height * 0.6f //图片绘制宽高固定为整个高度的60%
+        val bitmapSize = headHeight * 0.6f //图片绘制宽高固定为整个高度的60%
         // 计算出第一个图开始的绘制位置，整个居中
-        var startX = width / 2f - (bitmapSize * 3 + textWidth * 3 + marginBetweenImgAndText * 3 + marginBetweenTextAndImg * 2) / 2f
+        var startX = seatView.width / 2f - (bitmapSize * 3 + textWidth * 3 + marginBetweenImgAndText * 3 + marginBetweenTextAndImg * 2) / 2f
 
         //绘制座位标记 未选、已选、已售
         kotlin.run {
