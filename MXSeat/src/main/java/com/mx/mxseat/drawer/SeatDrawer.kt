@@ -4,12 +4,11 @@ import android.graphics.*
 import com.mx.mxseat.MXSeatView
 import com.mx.mxseat.SeatConfig
 import com.mx.mxseat.dp2px
+import kotlin.math.max
 
 class SeatDrawer(private val seatView: MXSeatView, private val config: SeatConfig) {
     private val backgroundPaint = Paint()
     private val headTextPaint = Paint()
-
-    private val defaultSeatWidth = seatView.context.dp2px(20)
     private val marginBetweenSeat = seatView.context.dp2px(5)
     private val imgMatrix = Matrix()
 
@@ -28,15 +27,25 @@ class SeatDrawer(private val seatView: MXSeatView, private val config: SeatConfi
         val selectBitmap = config.seatCheckedBitmap!!
         val soldBitmap = config.seatSoldBitmap!!
 
+        val margin = marginBetweenSeat * scale
+
+        val transX = config.getSeatTranslateX()
+        val transY = config.getSeatTranslateY()
+        val imgWidth = (config.defaultImgWidth * scale)
+        val imgHeight = (config.defaultImgHeight * scale)
+        val imgScaleX = imgWidth / seatBitmap.width
+        val imgScaleY = imgHeight / seatBitmap.height
+
         val rowSize = config.rowSize
         val columnSize = config.columnSize
-        imgMatrix.setScale(config.imgScaleWidth, config.imgScaleHeight)
-
-        var left = 0
-        var top = config.headHeight
         for (row in (0 until rowSize)) {
+            val top = transY + config.headHeight + row * imgHeight + (row + 1) * margin
             for (column in (0 until columnSize)) {
-//                imgMatrix.postTranslate()
+                val left = transX + column * imgWidth + (column + 1) * margin
+                imgMatrix.reset()
+                imgMatrix.setScale(imgScaleX, imgScaleY)
+                imgMatrix.postTranslate(left, top)
+                canvas.drawBitmap(seatBitmap, imgMatrix, null)
             }
         }
     }

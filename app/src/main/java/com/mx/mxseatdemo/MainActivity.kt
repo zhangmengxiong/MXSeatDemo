@@ -9,6 +9,6 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        seatView.setSeatSize(15, 10)
+        seatView.setSeatSize(5, 10)
     }
 }
